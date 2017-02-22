@@ -14,8 +14,18 @@ require "module/response"
 
 require "json"
 require "net/http"
+require 'singleton'
 
 module Bankin
+  #Permet de construire la gem depuis initializer
+  class << self
+    attr_accessor :configuration
+  end
+
+  def self.configure
+    self.configuration ||= Request.new
+    yield(configuration)
+  end
 
   ##
   # Principale class de la gem
@@ -24,6 +34,7 @@ module Bankin
   # GET - POST - PUT - DELETE
   # Ces class, permettent d'effectuer les requêtes avec l'api Bankin.
   class Request
+
     attr_reader :post
     attr_reader :get
     attr_reader :put
@@ -32,7 +43,19 @@ module Bankin
     attr_reader :client_id
     attr_reader :client_secret
 
+    def initialize
+      #Construction without params in config only initializer
+      @client_id = 'yourClientIdInConfigure'
+      @client_secret = 'yourClientSecretInConfigure'
+
+      @post = Bankin::Post.new(@client_id, @client_secret)
+      @get = Bankin::Get.new(@client_id, @client_secret)
+      @put = Bankin::Put.new(@client_id, @client_secret)
+      @delete = Bankin::Delete.new(@client_id, @client_secret)
+    end
+
     def initialize(client_id, client_secret)
+      #Construction with params
       @client_id = client_id
       @client_secret = client_secret
 
