@@ -14,7 +14,6 @@ require "module/response"
 
 require "json"
 require "net/http"
-require 'singleton'
 
 module Bankin
   #Permet de construire la gem depuis initializer
